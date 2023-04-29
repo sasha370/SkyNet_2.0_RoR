@@ -1,4 +1,4 @@
-name: Ruby CI
+name: CI
 
 on:
   push:
@@ -44,7 +44,13 @@ jobs:
           sudo apt-get install -y postgresql-client
           gem install bundler
           bundle install --jobs 4 --retry 3
-      - name: Run Rubocop
-        run: bundle exec rubocop
+
+      - name: Run RuboCop
+        run: |
+          bundle exec rubocop --format simple --fail-level error
+
       - name: Run RSpec
-        run: bundle exec rspec
+        run: |
+          bundle exec rspec spec --format documentation
+        env:
+          RUBYOPT: -W:no-deprecated -W:no-experimental
