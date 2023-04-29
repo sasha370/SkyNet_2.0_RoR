@@ -1,0 +1,9 @@
+# Successfully request
+{"text"=>""}
+
+
+  # Failed request
+{"error"=>
+   {"message"=>"Invalid file format. Supported formats: ['m4a', 'mp3', 'webm', 'mp4', 'mpga', 'wav', 'mpeg']", "type"=>"invalid_request_error", "param"=>nil, "code"=>nil}}
+
+
