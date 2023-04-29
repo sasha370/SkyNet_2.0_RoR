@@ -29,7 +29,7 @@ RSpec.describe Handlers::VoiceHandler do
     context 'when file is downloaded and converted successfully' do
       before do
         allow(handle_event).to receive(:download_file)
-        allow(handle_event).to receive(:convert_file).and_return(true)
+        allow(handle_event).to receive(:convert_ogg_to_mp3).and_return(true)
         allow(handle_event).to receive(:transcribe_audio).and_return('transcription')
       end
 
@@ -39,7 +39,7 @@ RSpec.describe Handlers::VoiceHandler do
       end
 
       it 'converts the file' do
-        expect(handle_event).to receive(:convert_file)
+        expect(handle_event).to receive(:convert_ogg_to_mp3)
         handle_event.call
       end
 
@@ -56,7 +56,7 @@ RSpec.describe Handlers::VoiceHandler do
     context 'when file conversion fails' do
       before do
         allow(handle_event).to receive(:download_file)
-        allow(handle_event).to receive(:convert_file).and_return(false)
+        allow(handle_event).to receive(:convert_ogg_to_mp3).and_return(false)
       end
 
       it 'downloads the file' do

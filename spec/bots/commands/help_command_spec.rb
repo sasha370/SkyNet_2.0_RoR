@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe HelpCommand do
+RSpec.describe Commands::HelpCommand do
   let(:answer) { ['Choose command:', 'some markup'] }
 
   before do

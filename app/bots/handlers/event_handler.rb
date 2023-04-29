@@ -28,8 +28,8 @@ module Handlers
 
     def log_event(event)
       if event.respond_to?(:from)
-        logger.info("[NEW EVENT]: #{event.class}." \
-          " User: #{event.from&.first_name} #{event.from&.last_name}, login:  #{event.from&.username}")
+        logger.info("[NEW EVENT]: #{event.class}. " \
+                    "User: #{event.from&.first_name} #{event.from&.last_name}, login:  #{event.from&.username}")
       else
         logger.warn("[UNKNOWN EVENT]: #{event.inspect}.")
       end

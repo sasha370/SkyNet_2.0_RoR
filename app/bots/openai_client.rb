@@ -7,7 +7,7 @@ class OpenaiClient
   include Singleton
   include BotLogger
 
-  AI_TOKEN = ENV['OPENAI_TOKEN']
+  AI_TOKEN = ENV.fetch('OPENAI_TOKEN', nil)
 
   attr_reader :client
 

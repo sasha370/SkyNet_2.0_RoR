@@ -32,3 +32,5 @@ coverage/**/*
 .env
 
 .env
+/config/credentials/production.key
+tmp/**/*

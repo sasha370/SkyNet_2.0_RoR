@@ -33,7 +33,7 @@ module Handlers
       if event.text.start_with?('/help')
         logger.info("[TYPE: command] #{event.text}")
         # TODO: add CommandHandler and parse type of command inside it
-        HelpCommand.call
+        Commands::HelpCommand.call
       else
         logger.info("[TYPE: text message] #{event.text}")
         ask(event.text)

@@ -1,11 +1,14 @@
 # frozen_string_literal: true
 
 require 'httparty'
+require 'streamio-ffmpeg'
 
 module Handlers
   # This class is responsible for downloading the file,
   # converting it to wav and sending it to the OpenAI API for transcription
   class VoiceHandler
+    include BotLogger
+
     attr_reader :ai_client, :tg_bot_client, :event
 
     def initialize(event, ai_client, tg_bot_client)
@@ -16,7 +19,7 @@ module Handlers
 
     def call
       download_file
-      return transcribe_audio if convert_file
+      return transcribe_audio if convert_ogg_to_mp3
 
       I18n.t('voice_handler.cant_convert_file')
     ensure
@@ -26,27 +29,29 @@ module Handlers
     private
 
     def download_file
-      download_url = "https://api.telegram.org/file/bot#{ENV['TELEGRAM_BOT_TOKEN']}/#{file['result']['file_path']}"
+      download_url = "https://api.telegram.org/file/bot#{ENV.fetch('TELEGRAM_BOT_TOKEN', nil)}" \
+                     "/#{file['result']['file_path']}"
       response = HTTParty.get(download_url)
 
-      File.open(file_name_ogg, 'wb') { |file| file.write(response.body) }
+      File.binwrite(file_name_ogg, response.body)
     end
 
-    def convert_file
-      # file_name_ogg = 'tmp/AgADIy0AAiTLaEo.ogg'
-      # file_name_wav = 'tmp/output.wav'
-      system("ffmpeg -i #{file_name_ogg} -acodec pcm_s16le -ac 1 -ar 16000 #{file_name_wav} 2> /dev/null ")
-      # Check if the file was converted
-      File.exist?(file_name_wav)
+    def convert_ogg_to_mp3
+      logger.info("[CONVERTING FILE] #{file_name_ogg} to #{file_name_mp3}")
+      audio = FFMPEG::Movie.new(file_name_ogg)
+      audio.transcode(file_name_mp3, { audio_codec: 'libmp3lame' })
+      File.exist?(file_name_mp3)
+    rescue FFMPEG::Error => e
+      logger.error("[CONVERTING FILE] #{e.message}")
     end
 
     def transcribe_audio
-      ai_client.transcribe(file_name_wav)
+      ai_client.transcribe(file_name_mp3)
     end
 
     def file
       # https://core.telegram.org/bots/api#getfile
-      tg_bot_client.api.get_file(file_id: event.voice.file_id)
+      @file ||= tg_bot_client.api.get_file(file_id: event.voice.file_id)
     end
 
     def file_uniq_id
@@ -57,12 +62,12 @@ module Handlers
       "tmp/#{file_uniq_id}.ogg"
     end
 
-    def file_name_wav
-      "tmp/#{file_uniq_id}.wav"
+    def file_name_mp3
+      "tmp/#{file_uniq_id}.mp3"
     end
 
     def clean_up
-      [file_name_ogg, file_name_wav].each { |file| File.delete(file) if File.exist?(file) }
+      [file_name_ogg, file_name_mp3].each { |file| FileUtils.rm_f(file) }
     end
   end
 end

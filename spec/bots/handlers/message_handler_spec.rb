@@ -26,7 +26,7 @@ RSpec.describe Handlers::MessageHandler do
       let(:answer) { ['Choose command:', 'some markup'] }
 
       before do
-        allow(HelpCommand).to receive(:call).and_return(answer)
+        allow(Commands::HelpCommand).to receive(:call).and_return(answer)
       end
 
       it 'calls handle_commands' do
