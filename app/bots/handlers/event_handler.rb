@@ -5,19 +5,17 @@ module Handlers
   class EventHandler
     include BotLogger
 
-    attr_reader :event, :tg_bot_client
-
-    def initialize(tg_bot_client)
-      @tg_bot_client = tg_bot_client
+    def self.process(event)
+      new(event).call
     end
 
-    def process(event)
+    def call # rubocop:disable Metrics/AbcSize
       log_event(event)
       if event.instance_of?(Telegram::Bot::Types::CallbackQuery)
         answer = CallbackHandler.process(event)
         [event.message.chat.id, answer]
       elsif event.instance_of?(Telegram::Bot::Types::Message)
-        answer, reply_markup = MessageHandler.process(event, tg_bot_client)
+        answer, reply_markup = MessageHandler.process(event)
         [event.chat.id, answer, reply_markup]
       else
         [event.message.chat.id, I18n.t('event_handler.unsupported_event')]
@@ -25,6 +23,12 @@ module Handlers
     end
 
     private
+
+    attr_reader :event
+
+    def initialize(event)
+      @event = event
+    end
 
     def log_event(event)
       if event.respond_to?(:from)

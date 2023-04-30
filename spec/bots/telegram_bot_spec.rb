@@ -25,13 +25,12 @@ RSpec.describe TelegramBot do
     before do
       allow(telegram_bot).to receive(:client).and_return(client)
       allow(client).to receive(:listen).and_yield(event)
-      allow(telegram_bot).to receive(:event_handler).and_return(event_handler)
-      allow(event_handler).to receive(:process).and_return(answer)
+      allow(Handlers::EventHandler).to receive(:process).and_return(answer)
       allow(client).to receive(:api)
     end
 
     it 'calls the event handler' do
-      expect(event_handler).to receive(:process).with(event)
+      expect(Handlers::EventHandler).to receive(:process).with(event)
       expect(client.api).to receive(:send_message).with(chat_id: answer.first,
                                                         text: answer.last,
                                                         reply_markup: nil)

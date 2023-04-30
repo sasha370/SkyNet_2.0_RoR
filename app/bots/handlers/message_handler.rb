@@ -5,8 +5,8 @@ module Handlers
   class MessageHandler
     include BotLogger
 
-    def self.process(event, tg_bot_client)
-      new(event, tg_bot_client).call
+    def self.process(event)
+      new(event).call
     end
 
     def call
@@ -22,11 +22,10 @@ module Handlers
 
     private
 
-    attr_reader :event, :tg_bot_client
+    attr_reader :event
 
-    def initialize(event, tg_bot_client)
+    def initialize(event)
       @event = event
-      @tg_bot_client = tg_bot_client
     end
 
     def handle_text_message
@@ -41,7 +40,7 @@ module Handlers
     end
 
     def process_voice_message
-      question = VoiceHandler.new(event, ai_client, tg_bot_client).call
+      question = VoiceHandler.new(event).call
       logger.info("[TYPE: voice message] #{question}")
       ask(question)
     end
