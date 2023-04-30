@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.describe Handlers::EventHandler do
-  let(:handle_event) { described_class.new(tg_bot_client).process(event) }
+  let(:handle_event) { described_class.process(event) }
 
-  let(:tg_bot_client) { instance_double(Telegram::Bot::Client) }
   let(:answer) { 'I can hear you, don\'t scream!' }
   let(:message_data) do
     { message_id: 1,
@@ -19,8 +18,8 @@ RSpec.describe Handlers::EventHandler do
     end
 
     it 'calls handler and return answer' do
+      expect(Handlers::MessageHandler).to receive(:process).with(event)
       expect(handle_event).to eq([event.chat.id, answer, nil])
-      expect(Handlers::MessageHandler).to have_received(:process).with(event, tg_bot_client)
     end
   end
 

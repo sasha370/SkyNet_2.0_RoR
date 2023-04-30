@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe Handlers::MessageHandler do
-  let(:handle_event) { described_class.process(event, tg_bot_client) }
+  let(:handle_event) { described_class.process(event) }
 
   let(:tg_bot_client) { instance_double(Telegram::Bot::Client) }
   let(:ai_client) { instance_double(OpenaiClient) }

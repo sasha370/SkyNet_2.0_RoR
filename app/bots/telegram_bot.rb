@@ -12,17 +12,16 @@ class TelegramBot
 
   def run
     client.listen do |event|
-      chat_id, answer, reply_markup = event_handler.process(event)
+      chat_id, answer, reply_markup = process_event(event)
       logger.info("[EVENT ANSWER] #{answer}")
-
       send_answer(chat_id:, answer:, reply_markup:)
     end
   end
 
   private
 
-  def event_handler
-    @event_handler ||= Handlers::EventHandler.new(client)
+  def process_event(event)
+    Handlers::EventHandler.process(event)
   end
 
   def send_answer(chat_id:, answer:, reply_markup: nil)

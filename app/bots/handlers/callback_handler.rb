@@ -2,10 +2,8 @@
 
 module Handlers
   # This class is responsible for handling callbacks from inline keyboard
-  class CallbackHandler
-    extend BotLogger
-
-    def self.process(event) # rubocop:disable Metrics/MethodLength
+  class CallbackHandler < BaseHandler
+    def call # rubocop:disable Metrics/MethodLength
       logger.info("[TYPE: callback] #{event.data}")
       case event.data
       when 'how_it_works'
