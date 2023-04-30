@@ -18,14 +18,6 @@ ENV RAILS_ENV=production
 ENV RAILS_SERVE_STATIC_FILES=true
 ENV RAILS_LOG_TO_STDOUT=true
 ENV DATABASE_URL=postgres://skynet:$DATABASE_PASSWORD@db:5432/skynet_production
-# ENV OPENAI_TOKEN=''
-# ENV TELEGRAM_BOT_TOKEN=''
-# ENV RAILS_MASTER_KEY=''
-
-# Add a script to be executed every time the container starts.
-# COPY entrypoint.sh /usr/bin/
-# RUN chmod +x /usr/bin/entrypoint.sh
-# ENTRYPOINT ["entrypoint.sh"]
 
 EXPOSE 3000
 
