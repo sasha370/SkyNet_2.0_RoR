@@ -2,13 +2,7 @@
 
 module Handlers
   # This class is responsible for handling Messages from Telegram API (text, voice, etc.  )
-  class MessageHandler
-    include BotLogger
-
-    def self.process(event)
-      new(event).call
-    end
-
+  class MessageHandler < BaseHandler
     def call
       if event.try(:text)
         handle_text_message
@@ -21,12 +15,6 @@ module Handlers
     end
 
     private
-
-    attr_reader :event
-
-    def initialize(event)
-      @event = event
-    end
 
     def handle_text_message
       if event.text.start_with?('/help')

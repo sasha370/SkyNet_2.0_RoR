@@ -2,13 +2,7 @@
 
 module Handlers
   # This class is responsible for handling All events from Telegram API
-  class EventHandler
-    include BotLogger
-
-    def self.process(event)
-      new(event).call
-    end
-
+  class EventHandler < BaseHandler
     def call # rubocop:disable Metrics/AbcSize
       log_event(event)
       if event.instance_of?(Telegram::Bot::Types::CallbackQuery)
@@ -23,12 +17,6 @@ module Handlers
     end
 
     private
-
-    attr_reader :event
-
-    def initialize(event)
-      @event = event
-    end
 
     def log_event(event)
       if event.respond_to?(:from)

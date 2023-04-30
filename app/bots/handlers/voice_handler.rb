@@ -3,13 +3,7 @@
 module Handlers
   # This class is responsible for downloading the file,
   # converting it to wav and sending it to the OpenAI API for transcription
-  class VoiceHandler
-    include BotLogger
-
-    def self.process(event)
-      new(event).call
-    end
-
+  class VoiceHandler < BaseHandler
     def call
       converted_file_path = converter.convert
 
@@ -21,12 +15,6 @@ module Handlers
     end
 
     private
-
-    attr_reader :event
-
-    def initialize(event)
-      @event = event
-    end
 
     def transcribe_audio(mp3_file_path)
       ai_client.transcribe(mp3_file_path)
