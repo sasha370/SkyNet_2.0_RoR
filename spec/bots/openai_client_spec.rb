@@ -36,7 +36,15 @@ RSpec.describe OpenaiClient do
       let(:response) { { 'error' => 'test error' } }
 
       it 'returns an error message' do
-        expect(client.ask('test')).to eq('Error: test error')
+        expect(client.ask('test')).to eq('test error')
+      end
+    end
+
+    context 'when Error raised' do
+      before { allow(ai_client).to receive(:chat).and_raise(OpenAI::Error) }
+
+      it 'returns an error message' do
+        expect(client.ask('test')).to eq('Failed to connect to ChatGPT. Please try again later.')
       end
     end
   end
@@ -59,7 +67,15 @@ RSpec.describe OpenaiClient do
       let(:response) { { 'error' => 'transcribe error' } }
 
       it 'returns an error message' do
-        expect(client.transcribe('test_file')).to eq 'Error: transcribe error'
+        expect(client.transcribe('test_file')).to eq 'transcribe error'
+      end
+    end
+
+    context 'when Error raised' do
+      before { allow(ai_client).to receive(:chat).and_raise(OpenAI::Error) }
+
+      it 'returns an error message' do
+        expect(client.ask('test')).to eq('Failed to connect to ChatGPT. Please try again later.')
       end
     end
   end

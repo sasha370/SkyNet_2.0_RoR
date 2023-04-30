@@ -29,3 +29,6 @@ RSpec/MultipleMemoizedHelpers:
 
 RSpec/MessageSpies:
   Enabled: false
+
+Metrics/MethodLength:
+  Max: 15

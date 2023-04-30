@@ -21,7 +21,7 @@ RSpec.describe Handlers::CallbackHandler do
     end
 
     describe 'all supported callbacks' do
-      %w[how_it_works restrictions examples].each do |callback|
+      %w[how_it_works restrictions examples voice_button].each do |callback|
         let(:callback) { callback }
 
         it 'returns a string for all supported callbacks' do

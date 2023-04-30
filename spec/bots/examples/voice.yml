@@ -1,0 +1,6 @@
+#<Telegram::Bot::Types::Voice
+  file_id="AwACAgIAAxkBAAICoGROt3ayanqZaAdW0MVSnssU-RRaAAKNLgAC7Ph4So90-LDnu9_KLwQ" 
+  file_unique_id="AgADjS4AAuz4eEo"
+  duration=1 
+  mime_type="audio/ogg" 
+  file_size=33832>

@@ -1,0 +1,12 @@
+#<Telegram::Bot::Types::User
+  id=268487721
+  is_bot=false
+  first_name="Sasha"
+  last_name="Kariakin"
+  username="budka52"
+  language_code="ru"
+  is_premium=nil
+  added_to_attachment_menu=nil 
+  can_join_groups=nil
+  can_read_all_group_messages=nil
+  supports_inline_queries=nil>
