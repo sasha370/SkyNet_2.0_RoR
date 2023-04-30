@@ -2,10 +2,13 @@ default: &default
   adapter: postgresql
   encoding: unicode
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  database: <%= ENV['DATABASE_NAME'] %>
+  username: <%= ENV['DATABASE_USERNAME'] %>
+  password: <%= ENV['DATABASE_PASSWORD'] %>
 
 development:
   <<: *default
-  database: SkyNet_development
+  database: skynet_development
 
   # The specified database role being used to connect to postgres.
   # To create additional roles in postgres see `$ createuser --help`.
@@ -39,7 +42,7 @@ development:
 # Do not set this db to the same as development or production.
 test:
   <<: *default
-  database: SkyNet_test
+  database: skynet_test
   host: localhost
   username: postgres
   password: postgres
@@ -66,6 +69,6 @@ test:
 #
 production:
   <<: *default
-  database: SkyNet_production
-  username: SkyNet
-  password: <%= ENV["SKYNET_DATABASE_PASSWORD"] %>
+  database: skynet_production
+  username: skynet
+  password: <%= ENV["DATABASE_PASSWORD"] %>

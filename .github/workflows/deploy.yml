@@ -1,0 +1,37 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Login to GitHub Container Registry
+        run: echo ${{ secrets.CR_PAT }} | docker login ghcr.io -u sasha370 --password-stdin
+
+      - name: Pull image to use as a cache
+        run: docker pull ghcr.io/sasha370/skynet_app:latest || exit 0
+
+      - name: Build Docker image
+        run: docker build . --cache-from ghcr.io/sasha370/skynet_app:latest --tag ghcr.io/sasha370/skynet_app:latest
+
+      - name: Push the image to GitHub Container Registry
+        run: docker push ghcr.io/sasha370/skynet_app:latest
+
+      - name: SSH Deploy
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            echo $CR_PAT | docker login ghcr.io -u sasha370 --password-stdin
+            docker-compose pull web
+            docker-compose up -d --no-deps
