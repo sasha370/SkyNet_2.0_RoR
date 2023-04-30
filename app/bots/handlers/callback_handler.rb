@@ -12,6 +12,8 @@ module Handlers
         I18n.t('callbacks.restrictions_message')
       when 'examples'
         I18n.t('callbacks.examples_message')
+      when 'voice_button'
+        I18n.t('callbacks.voice_button')
       when 'change_language'
         I18n.locale = I18n.locale == :ru ? :en : :ru
         I18n.t('callbacks.language_changed_message')

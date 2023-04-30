@@ -23,11 +23,12 @@ class OpenaiClient
         temperature: 0.7
       }
     )
-
     return response.dig('choices', 0, 'message', 'content') unless response['error']
 
-    # TODO: handle error
-    "Error: #{response['error']}"
+    response['error']
+  rescue OpenAI::Error => e
+    logger.error("[OPENAI CHAT ERROR]: #{e}")
+    'Failed to connect to ChatGPT. Please try again later.'
   end
 
   def transcribe(file)
@@ -41,7 +42,9 @@ class OpenaiClient
     logger.info("[TRANSCRIBED RESPONSE] #{response}")
     return response['text'] unless response['error']
 
-    # TODO: handle error
-    "Error: #{response['error']}"
+    response['error']
+  rescue OpenAI::Error => e
+    logger.error("[OPENAI TRANSCRIBE ERROR]: #{e}")
+    'Failed to connect to ChatGPT. Please try again later.'
   end
 end
