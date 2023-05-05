@@ -17,8 +17,9 @@ COPY . /app
 ENV RAILS_ENV=production
 ENV RAILS_SERVE_STATIC_FILES=true
 ENV RAILS_LOG_TO_STDOUT=true
-ENV DATABASE_URL=postgres://skynet:$DATABASE_PASSWORD@db:5432/skynet_production
 
+# ENV POSTGRES_HOST=postgres://$POSTGRES_USERNAME:$POSTGRES_PASSWORD@$POSTGRES_HOST/$POSTGRES_DB__NAME
+ENTRYPOINT [ "./entrypoint.sh" ]
 EXPOSE 3000
 
 CMD ["bin/rails", "server", "-b", "0.0.0.0"]

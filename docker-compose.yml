@@ -2,6 +2,7 @@ version: '3.8'
 services:
   database:
     image: postgres:latest
+    restart: always
     env_file: .env
     volumes:
       - db_data:/var/lib/postgresql/data

@@ -35,3 +35,4 @@ jobs:
             echo $CR_PAT | docker login ghcr.io -u sasha370 --password-stdin
             docker-compose pull web
             docker-compose up -d --no-deps
+            
