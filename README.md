@@ -14,3 +14,4 @@ For this, Wisper speech recognition technologies and ChatGPT capabilities are us
 2. rails server
 3. Visit your Bot and start chatting
 
+
