@@ -75,6 +75,6 @@ class OggToMp3ConverterService
 
   def file
     # https://core.telegram.org/bots/api#getfile
-    client.api.get_file(file_id: event.voice.file_id)
+    client.api.get_file(file_id: event.data.dig('voice', 'file_id'))
   end
 end

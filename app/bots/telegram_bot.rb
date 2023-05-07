@@ -11,45 +11,31 @@ class TelegramBot
   end
 
   def run
-    client.listen do |event|
-      parse_user(event)
-      chat_id, answer, reply_markup = process_event(event)
-      logger.info("[EVENT ANSWER] #{answer}")
-      send_answer(chat_id:, answer:, reply_markup:)
+    client.listen do |raw_event|
+      event = parse_event(raw_event)
+      if event
+        process_event(event)
+        send_answer(event.answer)
+      end
     end
   end
 
   private
 
-  def parse_user(event)
-    return if User.find_by(telegram_id: event.from.id)
-
-    User.create(user_params(event))
-  rescue StandardError => e
-    logger.error("[CREATE USER FAILED] #{e.message}")
+  def parse_event(event)
+    EventParser.call(event)
   end
 
   def process_event(event)
     Handlers::EventHandler.process(event)
   end
 
-  def send_answer(chat_id:, answer:, reply_markup: nil)
-    client.api.send_message(chat_id:, text: answer, reply_markup:)
+  # TODO: Move it to separate class ~ TelegramBot::AnswerSender
+  def send_answer(answer)
+    client.api.send_message(chat_id: answer.chat_id, text: answer.text, reply_markup: answer.reply_markup)
   end
 
   def client
     @client ||= Telegram::Bot::Client.new(@token)
-  end
-
-  def user_params(event)
-    {
-      telegram_id: event.from.id,
-      first_name: event.from.first_name,
-      last_name: event.from.last_name,
-      username: event.from.username,
-      language_code: event.from.language_code,
-      is_bot: event.from.is_bot,
-      is_premium: event.from.is_premium
-    }
   end
 end

@@ -13,6 +13,10 @@ module Handlers
       raise NotImplementedError
     end
 
+    def update_answer(text, reply_markup = nil)
+      event.answer.update(text:, reply_markup:)
+    end
+
     private
 
     attr_reader :event
