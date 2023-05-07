@@ -12,10 +12,10 @@ class EventParser
     @raw_event = raw_event
   end
 
-  def call
+  def call # rubocop:disable Metrics/AbcSize
     Event.create(
       event_type: raw_event.class.name.split('::').last,
-      chat_id: raw_event.chat.id,
+      chat_id: raw_event.try(:chat)&.id || raw_event.try(:message)&.chat&.id,
       data: raw_event,
       user_id: find_or_create_user(raw_event).id
     )

@@ -18,7 +18,7 @@ module Commands
       ]]
 
       markup = Telegram::Bot::Types::InlineKeyboardMarkup.new(inline_keyboard: kb)
-      [I18n.t('commands.help.choose_command'), markup]
+      [I18n.t('commands.help.choose_command'), markup.to_json]
     end
   end
 end

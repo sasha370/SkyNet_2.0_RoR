@@ -45,7 +45,7 @@ en:
     examples_message: "Example questions: \nTell me a story about how a pink elephant flew to the moon.\nCompare BMW and VOLVO in 10 ways.\nMake a list of the best films to watch in the evening. I love films of the 90s, comedies.\nWhat should I cook if I have only a piece of chicken and potatoes.\nThe Answer to the Ultimate Question of Life, the Universe and Everything Else"
     voice_button_message: "You can send a voice message.\nTo the right of the paperclip, there is a 'Microphone' button.\nPress and hold to record.\nIf you don't see the microphone button, click on the icon to the right of the paperclip and it will change to the one you need."
     not_known_message: "I don't know such a team. Try again."
-    language_changed_message: "Menu language changed to Russian."
+    language_changed_message: "Language changed successfully"
 
   event_handler:
     unsupported_event: "Unsupported event."

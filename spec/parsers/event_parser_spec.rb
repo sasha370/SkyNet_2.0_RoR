@@ -22,7 +22,7 @@ RSpec.describe EventParser do
       expect(Event).to receive(:create).with(
         event_type: 'Message',
         chat_id: 1,
-        data: raw_event.to_json,
+        data: raw_event,
         user_id: an_instance_of(Integer)
       )
       parse
@@ -40,7 +40,7 @@ RSpec.describe EventParser do
       expect(Event).to receive(:create).with(
         event_type: 'Message',
         chat_id: 1,
-        data: raw_event.to_json,
+        data: raw_event,
         user_id: user.id
       )
       expect { parse }.not_to change(User, :count)

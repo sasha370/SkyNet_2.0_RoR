@@ -49,8 +49,12 @@ module SkyNet
       # It uses separate thread to run in background
       config.after_initialize do
         Thread.new do
+          begin
           bot = TelegramBot.new(ENV['TELEGRAM_BOT_TOKEN'])
           bot.run
+          rescue StandardError => e
+            logger.error("[TELEGRAM BOT ERROR] #{e.message}")
+          end
         end
       end
     end
