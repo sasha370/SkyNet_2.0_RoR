@@ -3,16 +3,14 @@
 module Handlers
   # This class is responsible for handling All events from Telegram API
   class EventHandler < BaseHandler
-    def call # rubocop:disable Metrics/AbcSize
+    def call
       log_event(event)
       if event.event_type == 'CallbackQuery'
-        answer = CallbackHandler.process(event)
-        [event.chat_id, answer]
+        CallbackHandler.process(event)
       elsif event.event_type == 'Message'
-        answer, reply_markup = MessageHandler.process(event)
-        [event.chat_id, answer, reply_markup]
+        MessageHandler.process(event)
       else
-        [event.chat_id, I18n.t('event_handler.unsupported_event')]
+        UnknownTypeHandler.process(event)
       end
     end
 

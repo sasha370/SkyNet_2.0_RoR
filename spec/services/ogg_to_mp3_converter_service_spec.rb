@@ -29,6 +29,7 @@ RSpec.describe OggToMp3ConverterService do
 
     it 'returns path to mp3 file' do
       expect(File).to receive(:binwrite).with("tmp/#{file_id}.ogg", file_id)
+      expect(client.api).to receive(:get_file).with(file_id:)
 
       expect(convert_file.convert).to eq("tmp/#{file_id}.mp3")
     end

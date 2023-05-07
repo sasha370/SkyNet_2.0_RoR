@@ -4,5 +4,5 @@
 class Answer < ApplicationRecord
   belongs_to :event
 
-  validates :text, :chat_id, presence: true
+  validates :chat_id, presence: true
 end

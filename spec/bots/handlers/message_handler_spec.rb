@@ -16,16 +16,20 @@ RSpec.describe Handlers::MessageHandler do
   context 'when message is a command' do
     context 'when command is /help' do
       let(:message_text) { '/help' }
-      let(:answer) { ['Choose command:', 'some markup'] }
+      let(:answer) { 'Choose command:' }
+      let(:markup) { 'some markup' }
 
       before do
-        allow(Commands::HelpCommand).to receive(:call).and_return(answer)
+        allow(Commands::HelpCommand).to receive(:call).and_return([answer, markup])
         event.data['text'] = message_text
       end
 
       it 'calls handle_commands' do
         expect(ai_client).not_to receive(:ask).with(message_text)
-        expect(handle_event).to eq(answer)
+        handle_event
+
+        expect(event.answer.text).to eq(answer)
+        expect(event.answer.reply_markup).to eq(markup)
       end
     end
   end
@@ -35,7 +39,8 @@ RSpec.describe Handlers::MessageHandler do
 
     it 'calls handle_commands' do
       expect(ai_client).to receive(:ask).with(event.data['text'])
-      expect(handle_event).to eq(ai_response)
+      handle_event
+      expect(event.answer.text).to eq(ai_response)
     end
   end
 
@@ -52,7 +57,8 @@ RSpec.describe Handlers::MessageHandler do
 
     it 'calls process_voice_message and ask_ai' do
       expect(ai_client).to receive(:ask).with('Here is my question')
-      expect(handle_event).to eq(ai_response)
+      handle_event
+      expect(event.answer.text).to eq(ai_response)
     end
   end
 
@@ -60,7 +66,8 @@ RSpec.describe Handlers::MessageHandler do
     let(:event) { create(:event, :with_unknown_type) }
 
     it 'returns an error message' do
-      expect(handle_event).to eq(I18n.t('message_handler.dont_understand'))
+      handle_event
+      expect(event.answer.text).to eq(I18n.t('message_handler.dont_understand'))
     end
   end
 end

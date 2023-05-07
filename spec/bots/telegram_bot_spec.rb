@@ -14,7 +14,7 @@ RSpec.describe TelegramBot do
     let(:client) { instance_double(Telegram::Bot::Client) }
     let(:event_handler) { instance_double(Handlers::EventHandler) }
     let(:event) { create(:event) }
-    let(:answer) { [event.chat_id, 'Hello, world!'] }
+    let(:answer) { event.answer }
 
     before do
       allow(telegram_bot).to receive(:client).and_return(client)
@@ -26,9 +26,9 @@ RSpec.describe TelegramBot do
 
     it 'calls the event handler' do
       expect(Handlers::EventHandler).to receive(:process).with(event)
-      expect(client.api).to receive(:send_message).with(chat_id: answer.first,
-                                                        text: answer.last,
-                                                        reply_markup: nil)
+      expect(client.api).to receive(:send_message).with(chat_id: answer.chat_id,
+                                                        text: answer.text,
+                                                        reply_markup: answer.reply_markup)
       telegram_bot.run
     end
 

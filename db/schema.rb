@@ -16,7 +16,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_07_093012) do
 
   create_table "answers", force: :cascade do |t|
     t.string "chat_id", null: false
-    t.string "text", null: false
+    t.string "text"
     t.text "reply_markup"
     t.bigint "event_id", null: false
     t.datetime "created_at", null: false

@@ -7,13 +7,9 @@ RSpec.describe Handlers::EventHandler do
   let(:event) { create(:event) }
 
   describe 'when the event is a Message' do
-    before do
-      allow(Handlers::MessageHandler).to receive(:process).and_return(answer)
-    end
-
     it 'calls handler and return answer' do
       expect(Handlers::MessageHandler).to receive(:process).with(event)
-      expect(handle_event).to eq([event.chat_id, answer, nil])
+      handle_event
     end
   end
 
@@ -21,13 +17,9 @@ RSpec.describe Handlers::EventHandler do
     let(:event) { create(:event, :with_callback) }
     let(:callback_answer) { 'Here is my callback answer' }
 
-    before do
-      allow(Handlers::CallbackHandler).to receive(:process).and_return(callback_answer)
-    end
-
     it 'calls handle_callback' do
       expect(Handlers::CallbackHandler).to receive(:process).with(event)
-      expect(handle_event).to eq([event.chat_id, callback_answer])
+      handle_event
     end
   end
 
@@ -36,7 +28,8 @@ RSpec.describe Handlers::EventHandler do
     let(:event) { create(:event, :with_unknown_type) }
 
     it 'calls handle_callback' do
-      expect(handle_event).to eq([event.chat_id, answer])
+      expect(Handlers::UnknownTypeHandler).to receive(:process).with(event)
+      handle_event
     end
   end
 end

@@ -14,8 +14,8 @@ class TelegramBot
     client.listen do |raw_event|
       event = parse_event(raw_event)
       if event
-        chat_id, answer, reply_markup = process_event(event)
-        send_answer(chat_id:, answer:, reply_markup:)
+        process_event(event)
+        send_answer(event.answer)
       end
     end
   end
@@ -31,8 +31,8 @@ class TelegramBot
   end
 
   # TODO: Move it to separate class ~ TelegramBot::AnswerSender
-  def send_answer(chat_id:, answer:, reply_markup: nil)
-    client.api.send_message(chat_id:, text: answer, reply_markup:)
+  def send_answer(answer)
+    client.api.send_message(chat_id: answer.chat_id, text: answer.text, reply_markup: answer.reply_markup)
   end
 
   def client

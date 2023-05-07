@@ -10,7 +10,8 @@ RSpec.describe Handlers::CallbackHandler do
       let(:event_data) { { 'data' => data } }
 
       it "returns a valid message for #{data}" do
-        expect(callback_handler.call).to eq(message)
+        callback_handler.call
+        expect(event.answer.text).to eq(message)
       end
     end
 
@@ -48,7 +49,8 @@ RSpec.describe Handlers::CallbackHandler do
       end
 
       it 'returns a valid message' do
-        expect(callback_handler.call).to eq(I18n.t('callbacks.language_changed_message'))
+        callback_handler.call
+        expect(event.answer.text).to eq(I18n.t('callbacks.language_changed_message'))
       end
     end
 
@@ -56,7 +58,8 @@ RSpec.describe Handlers::CallbackHandler do
       let(:event_data) { { 'data' => 'unknown_data' } }
 
       it 'returns a default message' do
-        expect(callback_handler.call).to eq(I18n.t('callbacks.not_known_message'))
+        callback_handler.call
+        expect(event.answer.text).to eq(I18n.t('callbacks.not_known_message'))
       end
     end
   end

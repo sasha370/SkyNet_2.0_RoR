@@ -6,7 +6,6 @@ RSpec.describe Answer do
   end
 
   describe 'validations' do
-    it { is_expected.to validate_presence_of(:text) }
     it { is_expected.to validate_presence_of(:chat_id) }
   end
 end

@@ -13,7 +13,6 @@ class OggToMp3ConverterService
   end
 
   def convert
-    # binding.pry
     return unless download_file
 
     convert_ogg_to_mp3
@@ -76,6 +75,6 @@ class OggToMp3ConverterService
 
   def file
     # https://core.telegram.org/bots/api#getfile
-    client.api.get_file(file_id: event.data.dig('message', 'voice', 'file_id'))
+    client.api.get_file(file_id: event.data.dig('voice', 'file_id'))
   end
 end
