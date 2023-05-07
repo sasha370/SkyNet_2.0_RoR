@@ -5,21 +5,10 @@ RSpec.describe Handlers::VoiceHandler do
 
   let(:ai_client) { instance_double(OpenaiClient) }
   let(:converter) { instance_double(OggToMp3ConverterService) }
-  let(:mp3_file_path) { 'tmp/my_voice_message.mp3' }
+  let(:mp3_file_path) { "tmp/#{event.data['voice']['file_id']}.mp3" }
   let(:ai_answer) { 'Hello world' }
 
-  let(:voice_file) do
-    Telegram::Bot::Types::Voice.new(file_unique_id: 'MyUniQId',
-                                    file_id: '123',
-                                    duration: 10)
-  end
-  let(:message_data) do
-    { message_id: 1,
-      voice: voice_file,
-      date: 1,
-      chat: { id: 1, type: 'type' } }
-  end
-  let(:event) { Telegram::Bot::Types::Message.new(message_data) }
+  let(:event) { create(:event, :with_voice) }
 
   before do
     allow(OggToMp3ConverterService).to receive(:new).and_return(converter)

@@ -44,7 +44,7 @@ module SkyNet
     config.api_only = true
 
     # Do not start Telegram bot in Rails console or in test environment
-    # unless Rails.const_defined?('Rails::Console') || Rails.env.test?
+    unless Rails.const_defined?('Rails::Console') || Rails.env.test?
       # Initialize Telegram bot only after Rails initialization
       # It uses separate thread to run in background
       config.after_initialize do
@@ -53,6 +53,6 @@ module SkyNet
           bot.run
         end
       end
-    # end
+    end
   end
 end

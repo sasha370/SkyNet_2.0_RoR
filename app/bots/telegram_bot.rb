@@ -11,19 +11,19 @@ class TelegramBot
   end
 
   def run
-    client.listen do |event|
-      # binding.pry
-      new_event = collect_event_data(event)
-      chat_id, answer, reply_markup = process_event(event)
-      logger.info("[EVENT ANSWER] #{answer}")
-      send_answer(chat_id:, answer:, reply_markup:)
+    client.listen do |raw_event|
+      event = parse_event(raw_event)
+      if event
+        chat_id, answer, reply_markup = process_event(event)
+        send_answer(chat_id:, answer:, reply_markup:)
+      end
     end
   end
 
   private
 
-  def collect_event_data(event)
-    CollectEventDataService.call(event)
+  def parse_event(event)
+    EventParser.call(event)
   end
 
   def process_event(event)

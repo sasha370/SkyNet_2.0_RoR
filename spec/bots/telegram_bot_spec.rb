@@ -13,18 +13,13 @@ RSpec.describe TelegramBot do
   describe '#listen' do
     let(:client) { instance_double(Telegram::Bot::Client) }
     let(:event_handler) { instance_double(Handlers::EventHandler) }
-    let(:message_data)  do
-      { message_id: 1,
-        date: 1,
-        text: 'Hello, world!',
-        chat: { id: 1, type: 'type' } }
-    end
-    let(:event) { Telegram::Bot::Types::Message.new(message_data) }
-    let(:answer) { [event.chat.id, 'Hello, world!'] }
+    let(:event) { create(:event) }
+    let(:answer) { [event.chat_id, 'Hello, world!'] }
 
     before do
       allow(telegram_bot).to receive(:client).and_return(client)
       allow(client).to receive(:listen).and_yield(event)
+      allow(EventParser).to receive(:call).and_return(event)
       allow(Handlers::EventHandler).to receive(:process).and_return(answer)
       allow(client).to receive(:api)
     end
@@ -35,6 +30,18 @@ RSpec.describe TelegramBot do
                                                         text: answer.last,
                                                         reply_markup: nil)
       telegram_bot.run
+    end
+
+    context 'when event parsed with error' do
+      before do
+        allow(EventParser).to receive(:call).and_return(nil)
+      end
+
+      it 'does not call the event handler' do
+        expect(Handlers::EventHandler).not_to receive(:process)
+        expect(client.api).not_to receive(:send_message)
+        telegram_bot.run
+      end
     end
   end
 end

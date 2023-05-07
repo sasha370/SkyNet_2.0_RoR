@@ -4,9 +4,10 @@ module Handlers
   # This class is responsible for handling Messages from Telegram API (text, voice, etc.  )
   class MessageHandler < BaseHandler
     def call
-      if event.try(:text)
-        handle_text_message
-      elsif event.try(:voice)
+      text = event.data['text']
+      if text
+        handle_text_message(text)
+      elsif event.data['voice']
         process_voice_message
       else
         logger.info("[TYPE: text message UNKNOWN] #{event.inspect}")
@@ -16,14 +17,14 @@ module Handlers
 
     private
 
-    def handle_text_message
-      if event.text.start_with?('/help')
-        logger.info("[TYPE: command] #{event.text}")
+    def handle_text_message(text)
+      if text.start_with?('/help')
+        logger.info("[TYPE: command] #{text}")
         # TODO: add CommandHandler and parse type of command inside it
         Commands::HelpCommand.call
       else
-        logger.info("[TYPE: text message] #{event.text}")
-        ask(event.text)
+        logger.info("[TYPE: text message] #{text}")
+        ask(text)
       end
     end
 

@@ -1,40 +1,62 @@
 # frozen_string_literal: true
 
 RSpec.describe Handlers::CallbackHandler do
-  describe '.process' do
-    let(:handle_event) { described_class.process(event) }
+  describe '#call' do
+    let(:event_data) { {} }
+    let(:event) { create(:event, :with_callback, data: event_data) }
+    let(:callback_handler) { described_class.new(event) }
 
-    let(:message_data) do
-      { message_id: 1,
-        date: 1,
-        text: 'Hello, world!',
-        chat: { id: 1, type: 'type' } }
-    end
-    let(:message) { Telegram::Bot::Types::Message.new(message_data) }
-    let(:user) { Telegram::Bot::Types::User.new(id: 1, first_name: 'John', last_name: 'Doe', is_bot: false) }
-    let(:event) do
-      Telegram::Bot::Types::CallbackQuery.new(id: '1',
-                                              from: user,
-                                              data: callback,
-                                              message:,
-                                              chat_instance: '1')
-    end
+    shared_examples 'a valid callback message' do |data, message|
+      let(:event_data) { { 'data' => data } }
 
-    describe 'all supported callbacks' do
-      %w[how_it_works restrictions examples voice_button].each do |callback|
-        let(:callback) { callback }
-
-        it 'returns a string for all supported callbacks' do
-          expect(handle_event).to be_a(String)
-        end
+      it "returns a valid message for #{data}" do
+        expect(callback_handler.call).to eq(message)
       end
     end
 
-    describe 'not supported callback' do
-      let(:callback) { 'not_supported' }
+    context "when data is 'how_it_works'" do
+      it_behaves_like 'a valid callback message', 'how_it_works', I18n.t('callbacks.how_it_works_message')
+    end
 
-      it 'returns a string for all supported callbacks' do
-        expect(handle_event).to eq('Я не знаю такой команды. Попробуйте еще раз')
+    context "when data is 'restrictions'" do
+      it_behaves_like 'a valid callback message', 'restrictions', I18n.t('callbacks.restrictions_message')
+    end
+
+    context "when data is 'examples'" do
+      it_behaves_like 'a valid callback message', 'examples', I18n.t('callbacks.examples_message')
+    end
+
+    context "when data is 'voice_button'" do
+      it_behaves_like 'a valid callback message', 'voice_button', I18n.t('callbacks.voice_button_message')
+    end
+
+    context "when data is 'change_language'" do
+      let(:event_data) { { 'data' => 'change_language' } }
+
+      it 'changes the language to English if the current language is Russian' do
+        I18n.with_locale(:ru) do
+          callback_handler.call
+          expect(I18n.locale).to eq(:en)
+        end
+      end
+
+      it 'changes the language to Russian if the current language is English' do
+        I18n.with_locale(:en) do
+          callback_handler.call
+          expect(I18n.locale).to eq(:ru)
+        end
+      end
+
+      it 'returns a valid message' do
+        expect(callback_handler.call).to eq(I18n.t('callbacks.language_changed_message'))
+      end
+    end
+
+    context 'when data is unknown' do
+      let(:event_data) { { 'data' => 'unknown_data' } }
+
+      it 'returns a default message' do
+        expect(callback_handler.call).to eq(I18n.t('callbacks.not_known_message'))
       end
     end
   end

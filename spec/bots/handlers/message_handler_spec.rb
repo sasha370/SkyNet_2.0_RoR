@@ -6,14 +6,7 @@ RSpec.describe Handlers::MessageHandler do
   let(:tg_bot_client) { instance_double(Telegram::Bot::Client) }
   let(:ai_client) { instance_double(OpenaiClient) }
   let(:ai_response) { 'I can hear you, don\'t scream!' }
-  let(:message_text) { 'Here is my question' }
-  let(:message_data) do
-    { message_id: 1,
-      date: 1,
-      text: message_text,
-      chat: { id: 1, type: 'type' } }
-  end
-  let(:event) { Telegram::Bot::Types::Message.new(message_data) }
+  let(:event) { create(:event) }
 
   before do
     allow_any_instance_of(described_class).to receive(:ai_client).and_return(ai_client) # rubocop:disable RSpec/AnyInstance
@@ -27,6 +20,7 @@ RSpec.describe Handlers::MessageHandler do
 
       before do
         allow(Commands::HelpCommand).to receive(:call).and_return(answer)
+        event.data['text'] = message_text
       end
 
       it 'calls handle_commands' do
@@ -40,24 +34,14 @@ RSpec.describe Handlers::MessageHandler do
     let(:message_text) { 'Here is my text question' }
 
     it 'calls handle_commands' do
-      expect(ai_client).to receive(:ask).with(message_text)
+      expect(ai_client).to receive(:ask).with(event.data['text'])
       expect(handle_event).to eq(ai_response)
     end
   end
 
   context 'when the message is a voice' do
     let(:voice_handler) { instance_double(Handlers::VoiceHandler) }
-    let(:voice_file) do
-      Telegram::Bot::Types::Voice.new(file_unique_id: 'test_file_id',
-                                      file_id: '123',
-                                      duration: 10)
-    end
-    let(:event) do
-      Telegram::Bot::Types::Message.new(message_id: 1,
-                                        voice: voice_file,
-                                        date: 1,
-                                        chat: { id: 1, type: 'type' })
-    end
+    let(:event) { create(:event, :with_voice) }
 
     before do
       allow(tg_bot_client).to receive(:api)
@@ -73,7 +57,7 @@ RSpec.describe Handlers::MessageHandler do
   end
 
   context 'when the message is neither text nor voice' do
-    let(:event) { Telegram::Bot::Types::Location.new(longitude: 10.0, latitude: 10.0) }
+    let(:event) { create(:event, :with_unknown_type) }
 
     it 'returns an error message' do
       expect(handle_event).to eq(I18n.t('message_handler.dont_understand'))

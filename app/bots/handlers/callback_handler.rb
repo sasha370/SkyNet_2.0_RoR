@@ -5,7 +5,8 @@ module Handlers
   class CallbackHandler < BaseHandler
     def call # rubocop:disable Metrics/MethodLength
       logger.info("[TYPE: callback] #{event.data}")
-      case event.data
+      # binding.pry
+      case event.data['data']
       when 'how_it_works'
         I18n.t('callbacks.how_it_works_message')
       when 'restrictions'
@@ -13,7 +14,7 @@ module Handlers
       when 'examples'
         I18n.t('callbacks.examples_message')
       when 'voice_button'
-        I18n.t('callbacks.voice_button')
+        I18n.t('callbacks.voice_button_message')
       when 'change_language'
         I18n.locale = I18n.locale == :ru ? :en : :ru
         I18n.t('callbacks.language_changed_message')

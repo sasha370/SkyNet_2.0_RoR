@@ -5,26 +5,22 @@ module Handlers
   class EventHandler < BaseHandler
     def call # rubocop:disable Metrics/AbcSize
       log_event(event)
-      if event.instance_of?(Telegram::Bot::Types::CallbackQuery)
+      if event.event_type == 'CallbackQuery'
         answer = CallbackHandler.process(event)
-        [event.message.chat.id, answer]
-      elsif event.instance_of?(Telegram::Bot::Types::Message)
+        [event.chat_id, answer]
+      elsif event.event_type == 'Message'
         answer, reply_markup = MessageHandler.process(event)
-        [event.chat.id, answer, reply_markup]
+        [event.chat_id, answer, reply_markup]
       else
-        [event.message.chat.id, I18n.t('event_handler.unsupported_event')]
+        [event.chat_id, I18n.t('event_handler.unsupported_event')]
       end
     end
 
     private
 
     def log_event(event)
-      if event.respond_to?(:from)
-        logger.info("[NEW EVENT]: #{event.class}. " \
-                    "User: #{event.from&.first_name} #{event.from&.last_name}, login:  #{event.from&.username}")
-      else
-        logger.warn("[UNKNOWN EVENT]: #{event.inspect}.")
-      end
+      logger.info("[NEW EVENT]: #{event.event_type}. " \
+                  "User: #{event.user.first_name} #{event.user.last_name}, login:  #{event.user.username}")
     end
   end
 end
