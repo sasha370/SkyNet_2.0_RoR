@@ -1,0 +1,24 @@
+#<Telegram::Bot::Types::Message:0x00007f1aac14f668
+@caption_entities=[],
+@chat=
+  #<Telegram::Bot::Types::Chat:0x00007f1aac155018
+    @first_name="Sasha",
+    @id=268487721,
+    @last_name="Kariakin",
+    @type="private",
+    @username="budka52">,
+@date=1682269751,
+@entities=[],
+@from=
+  #<Telegram::Bot::Types::User:0x00007f1aac14cf08
+    @first_name="Sasha",
+    @id=268487721,
+    @is_bot=false,
+    @language_code="ru",
+    @last_name="Kariakin",
+    @username="budka52">,
+@message_id=470,
+@new_chat_members=[],
+@new_chat_photo=[],
+@photo=[],
+@text="5+5">
